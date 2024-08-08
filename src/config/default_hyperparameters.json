@@ -1,3 +1,5 @@
 {
-  "var_smoothing": 1e-8
+  "var_smoothing": 1e-8,
+  "prob_threshold": 0.25
+
 }

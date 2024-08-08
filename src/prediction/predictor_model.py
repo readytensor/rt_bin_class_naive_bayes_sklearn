@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.exceptions import NotFittedError
 from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import f1_score
 
 warnings.filterwarnings("ignore")
 
@@ -26,6 +27,7 @@ class Classifier:
     def __init__(
         self,
         var_smoothing: Optional[float] = 1e-8,
+        prob_threshold: Optional[float] = 0.5,
         **kwargs,
     ):
         """Construct a new Naive Bayes binary classifier.
@@ -36,6 +38,7 @@ class Classifier:
                 Defaults to 1e-9.
         """
         self.var_smoothing = var_smoothing
+        self.prob_threshold = float(prob_threshold)
         self.model = self.build_model()
         self._is_trained = False
 
@@ -77,16 +80,20 @@ class Classifier:
         return self.model.predict_proba(inputs)
 
     def evaluate(self, test_inputs: pd.DataFrame, test_targets: pd.Series) -> float:
-        """Evaluate the binary classifier and return the accuracy.
+        """Evaluate the classifier and return the accuracy.
 
         Args:
             test_inputs (pandas.DataFrame): The features of the test data.
             test_targets (pandas.Series): The labels of the test data.
         Returns:
-            float: The accuracy of the binary classifier.
+            float: The accuracy of the classifier.
         """
         if self.model is not None:
-            return self.model.score(test_inputs, test_targets)
+            prob = self.predict_proba(test_inputs)
+            labels = prob[:, 1] > self.prob_threshold
+
+            return f1_score(test_targets, labels)
+
         raise NotFittedError("Model is not fitted yet.")
 
     def save(self, model_dir_path: str) -> None:
@@ -113,9 +120,7 @@ class Classifier:
 
     def __str__(self):
         # sort params alphabetically for unit test to run successfully
-        return (
-            f"Model name: {self.model_name} (var_smoothing: {self.var_smoothing})"
-        )
+        return f"Model name: {self.model_name} (var_smoothing: {self.var_smoothing})"
 
 
 def train_predictor_model(
