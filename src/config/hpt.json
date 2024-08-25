@@ -1,13 +1,11 @@
 {
-  "num_trials": 20,
-  "hyperparameters": [
-    {
-      "name": "var_smoothing",
-      "short_desc": "Portion of the largest variance of all features that is added to variances for calculation stability.",
-      "type": "real",
-      "search_type": "log-uniform",
-      "range_low": 5e-10,
-      "range_high": 1e-6
-    }
-  ]
+  "decision_threshold": {
+    "grid_search_vals": [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
+  },
+  "balancing_factors": {
+    "grid_search_vals": [0, 0.25, 0.5, 0.75, 1.0, 1.25]
+  },
+  "k_neighbors": {
+    "grid_search_vals": [1, 3, 5, 7, 9]
+  }
 }

@@ -1,3 +1,5 @@
 {
-  "var_smoothing": 1e-8
+  "var_smoothing": 1e-8,
+  "decision_threshold": 0.5,
+  "positive_class_weight": 1.0
 }
